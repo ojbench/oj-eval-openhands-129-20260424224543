@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <variant>
 #include <sstream>
 
@@ -16,7 +16,7 @@ struct Variable {
 
 class ScopeSimulator {
 private:
-    vector<map<string, Variable>> scopes;
+    vector<unordered_map<string, Variable>> scopes;
     
     bool isValidInt(const string& s) {
         if (s.empty()) return false;
@@ -83,11 +83,11 @@ private:
     
 public:
     ScopeSimulator() {
-        scopes.push_back(map<string, Variable>());
+        scopes.push_back(unordered_map<string, Variable>());
     }
     
     void indent() {
-        scopes.push_back(map<string, Variable>());
+        scopes.push_back(unordered_map<string, Variable>());
     }
     
     bool dedent() {

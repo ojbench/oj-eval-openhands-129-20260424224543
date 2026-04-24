@@ -1,0 +1,5 @@
+4
+Declare string s ""
+Print s
+SelfAdd s "test"
+Print s

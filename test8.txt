@@ -1,0 +1,21 @@
+20
+Declare int a 0
+Print a
+SelfAdd a 5
+Print a
+Indent
+Declare int b 10
+Print b
+Print a
+Add a a b
+Print a
+Dedent
+Print a
+Indent
+Declare string s "test"
+Print s
+SelfAdd s " more"
+Print s
+Dedent
+Dedent
+Dedent
