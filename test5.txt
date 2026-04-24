@@ -1,0 +1,4 @@
+3
+Declare int 123abc 5
+Declare int abc-def 10
+Declare int valid_name 20

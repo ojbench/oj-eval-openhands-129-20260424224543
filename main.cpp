@@ -18,6 +18,15 @@ class ScopeSimulator {
 private:
     vector<map<string, Variable>> scopes;
     
+    bool isValidVariableName(const string& name) {
+        if (name.empty()) return false;
+        if (!isalpha(name[0]) && name[0] != '_') return false;
+        for (char c : name) {
+            if (!isalnum(c) && c != '_') return false;
+        }
+        return true;
+    }
+    
     Variable* findVariable(const string& name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             auto it = scopes[i].find(name);
@@ -77,6 +86,10 @@ public:
     }
     
     bool declare(const string& type, const string& name, const string& valueStr) {
+        if (!isValidVariableName(name)) {
+            return false;
+        }
+        
         if (scopes.back().find(name) != scopes.back().end()) {
             return false;
         }
@@ -104,6 +117,10 @@ public:
     }
     
     bool add(const string& result, const string& value1, const string& value2) {
+        if (!isValidVariableName(result) || !isValidVariableName(value1) || !isValidVariableName(value2)) {
+            return false;
+        }
+        
         Variable* resVar = findVariable(result);
         Variable* val1Var = findVariable(value1);
         Variable* val2Var = findVariable(value2);
@@ -130,6 +147,10 @@ public:
     }
     
     bool selfAdd(const string& name, const string& valueStr) {
+        if (!isValidVariableName(name)) {
+            return false;
+        }
+        
         Variable* var = findVariable(name);
         if (!var) {
             return false;
@@ -156,6 +177,10 @@ public:
     }
     
     bool print(const string& name) {
+        if (!isValidVariableName(name)) {
+            return false;
+        }
+        
         Variable* var = findVariable(name);
         if (!var) {
             return false;
@@ -186,16 +211,16 @@ public:
         } else if (command == "Dedent") {
             return dedent();
         } else if (command == "Declare") {
-            if (tokens.size() != 4) return false;
+            if (tokens.size() < 4) return false;
             return declare(tokens[1], tokens[2], tokens[3]);
         } else if (command == "Add") {
-            if (tokens.size() != 4) return false;
+            if (tokens.size() < 4) return false;
             return add(tokens[1], tokens[2], tokens[3]);
         } else if (command == "SelfAdd") {
-            if (tokens.size() != 3) return false;
+            if (tokens.size() < 3) return false;
             return selfAdd(tokens[1], tokens[2]);
         } else if (command == "Print") {
-            if (tokens.size() != 2) return false;
+            if (tokens.size() < 2) return false;
             return print(tokens[1]);
         }
         
