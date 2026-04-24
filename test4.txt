@@ -1,0 +1,6 @@
+5
+Declare string s "Hello World Test"
+Print s
+SelfAdd s " More Text"
+Print s
+Dedent

@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <variant>
+#include <sstream>
 
 using namespace std;
 
@@ -25,6 +26,37 @@ private:
             }
         }
         return nullptr;
+    }
+    
+    vector<string> parseTokens(const string& line) {
+        vector<string> tokens;
+        size_t i = 0;
+        while (i < line.size()) {
+            if (line[i] == ' ') {
+                i++;
+                continue;
+            }
+            if (line[i] == '"') {
+                size_t j = i + 1;
+                while (j < line.size() && line[j] != '"') {
+                    j++;
+                }
+                if (j < line.size()) {
+                    tokens.push_back(line.substr(i, j - i + 1));
+                    i = j + 1;
+                } else {
+                    i++;
+                }
+            } else {
+                size_t j = i;
+                while (j < line.size() && line[j] != ' ') {
+                    j++;
+                }
+                tokens.push_back(line.substr(i, j - i));
+                i = j;
+            }
+        }
+        return tokens;
     }
     
 public:
@@ -138,6 +170,37 @@ public:
         
         return true;
     }
+    
+    bool processLine(const string& line) {
+        vector<string> tokens = parseTokens(line);
+        
+        if (tokens.empty()) {
+            return false;
+        }
+        
+        string command = tokens[0];
+        
+        if (command == "Indent") {
+            indent();
+            return true;
+        } else if (command == "Dedent") {
+            return dedent();
+        } else if (command == "Declare") {
+            if (tokens.size() != 4) return false;
+            return declare(tokens[1], tokens[2], tokens[3]);
+        } else if (command == "Add") {
+            if (tokens.size() != 4) return false;
+            return add(tokens[1], tokens[2], tokens[3]);
+        } else if (command == "SelfAdd") {
+            if (tokens.size() != 3) return false;
+            return selfAdd(tokens[1], tokens[2]);
+        } else if (command == "Print") {
+            if (tokens.size() != 2) return false;
+            return print(tokens[1]);
+        }
+        
+        return false;
+    }
 };
 
 int main() {
@@ -154,61 +217,7 @@ int main() {
         string line;
         getline(cin, line);
         
-        if (line.empty()) {
-            i--;
-            continue;
-        }
-        
-        size_t pos = line.find(' ');
-        string command = (pos == string::npos) ? line : line.substr(0, pos);
-        
-        bool success = false;
-        
-        if (command == "Indent") {
-            sim.indent();
-            success = true;
-        } else if (command == "Dedent") {
-            success = sim.dedent();
-        } else if (command == "Declare") {
-            size_t pos1 = line.find(' ');
-            size_t pos2 = line.find(' ', pos1 + 1);
-            size_t pos3 = line.find(' ', pos2 + 1);
-            
-            if (pos1 != string::npos && pos2 != string::npos && pos3 != string::npos) {
-                string type = line.substr(pos1 + 1, pos2 - pos1 - 1);
-                string name = line.substr(pos2 + 1, pos3 - pos2 - 1);
-                string value = line.substr(pos3 + 1);
-                success = sim.declare(type, name, value);
-            }
-        } else if (command == "Add") {
-            size_t pos1 = line.find(' ');
-            size_t pos2 = line.find(' ', pos1 + 1);
-            size_t pos3 = line.find(' ', pos2 + 1);
-            
-            if (pos1 != string::npos && pos2 != string::npos && pos3 != string::npos) {
-                string result = line.substr(pos1 + 1, pos2 - pos1 - 1);
-                string value1 = line.substr(pos2 + 1, pos3 - pos2 - 1);
-                string value2 = line.substr(pos3 + 1);
-                success = sim.add(result, value1, value2);
-            }
-        } else if (command == "SelfAdd") {
-            size_t pos1 = line.find(' ');
-            size_t pos2 = line.find(' ', pos1 + 1);
-            
-            if (pos1 != string::npos && pos2 != string::npos) {
-                string name = line.substr(pos1 + 1, pos2 - pos1 - 1);
-                string value = line.substr(pos2 + 1);
-                success = sim.selfAdd(name, value);
-            }
-        } else if (command == "Print") {
-            size_t pos1 = line.find(' ');
-            if (pos1 != string::npos) {
-                string name = line.substr(pos1 + 1);
-                success = sim.print(name);
-            }
-        }
-        
-        if (!success) {
+        if (!sim.processLine(line)) {
             cout << "Invalid operation\n";
         }
     }
