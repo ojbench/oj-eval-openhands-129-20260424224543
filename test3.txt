@@ -1,0 +1,7 @@
+6
+Declare int a 3
+Declare int a 4
+Print b
+Dedent
+Dedent
+Print a

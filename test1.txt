@@ -1,0 +1,9 @@
+8
+Declare int a 3
+Declare string b "SJTU"
+Print a
+Print b
+Indent
+Declare int a 4
+Print a
+Dedent

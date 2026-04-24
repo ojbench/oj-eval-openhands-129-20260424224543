@@ -1,0 +1,11 @@
+10
+Declare int a 3
+Declare int b 5
+Declare int c 0
+Add c a b
+Print c
+SelfAdd a 10
+Print a
+Declare string s "Hello"
+SelfAdd s " World"
+Print s
