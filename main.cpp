@@ -18,6 +18,19 @@ class ScopeSimulator {
 private:
     vector<map<string, Variable>> scopes;
     
+    bool isValidInt(const string& s) {
+        if (s.empty()) return false;
+        size_t start = 0;
+        if (s[0] == '-' || s[0] == '+') {
+            if (s.size() == 1) return false;
+            start = 1;
+        }
+        for (size_t i = start; i < s.size(); i++) {
+            if (!isdigit(s[i])) return false;
+        }
+        return true;
+    }
+    
     bool isValidVariableName(const string& name) {
         if (name.empty()) return false;
         if (!isalpha(name[0]) && name[0] != '_') return false;
@@ -98,6 +111,9 @@ public:
         var.type = type;
         
         if (type == "int") {
+            if (!isValidInt(valueStr)) {
+                return false;
+            }
             try {
                 var.value = stoi(valueStr);
             } catch (...) {
@@ -157,6 +173,9 @@ public:
         }
         
         if (var->type == "int") {
+            if (!isValidInt(valueStr)) {
+                return false;
+            }
             try {
                 int addValue = stoi(valueStr);
                 var->value = get<int>(var->value) + addValue;

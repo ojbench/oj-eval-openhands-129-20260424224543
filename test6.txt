@@ -1,0 +1,7 @@
+6
+Declare int a 123abc
+Declare int b -5
+Print b
+Declare int c +10
+Print c
+SelfAdd b -3
