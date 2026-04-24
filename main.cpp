@@ -261,6 +261,11 @@ int main() {
         string line;
         getline(cin, line);
         
+        // Trim trailing whitespace (including \r)
+        while (!line.empty() && (line.back() == ' ' || line.back() == '\r' || line.back() == '\n' || line.back() == '\t')) {
+            line.pop_back();
+        }
+        
         if (!sim.processLine(line)) {
             cout << "Invalid operation\n";
         }
